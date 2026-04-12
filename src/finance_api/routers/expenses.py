@@ -1,0 +1,60 @@
+from datetime import date
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from sqlalchemy.orm import Session
+
+from finance_api import models, schemas, services
+from finance_api.database import get_db
+from finance_api.dependencies import get_current_user
+
+router = APIRouter(prefix="/expenses", tags=["expenses"])
+
+
+@router.post("", response_model=schemas.ExpenseRead, status_code=status.HTTP_201_CREATED)
+def create_expense(
+    payload: schemas.ExpenseCreate,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    return services.create_expense(db, user, payload)
+
+
+@router.get("", response_model=list[schemas.ExpenseRead])
+def list_expenses(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+    category: models.ExpenseCategory | None = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    return services.list_expenses(db, user, category, start_date, end_date, skip, limit)
+
+
+@router.patch("/{expense_id}", response_model=schemas.ExpenseRead)
+def update_expense(
+    expense_id: int,
+    payload: schemas.ExpenseUpdate,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    expense = services.get_expense(db, user, expense_id)
+    if expense is None:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    return services.update_expense(db, expense, payload)
+
+
+@router.delete("/{expense_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_expense(
+    expense_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    expense = services.get_expense(db, user, expense_id)
+    if expense is None:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    services.delete_expense(db, expense)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
