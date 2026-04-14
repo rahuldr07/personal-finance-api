@@ -2,9 +2,11 @@ from datetime import date
 
 from fastapi.testclient import TestClient
 
+from finance_api.database import init_db
 from finance_api.main import app
 
 
+init_db()
 client = TestClient(app)
 
 
@@ -86,4 +88,3 @@ def test_monthly_summary():
     response = client.get("/reports/monthly?year=2026&month=5", headers=headers)
     assert response.status_code == 200
     assert response.json()["total"] >= 30
-
