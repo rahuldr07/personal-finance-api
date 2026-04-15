@@ -105,3 +105,23 @@ def monthly_summary(db: Session, owner: models.User, year: int, month: int) -> s
         categories=categories,
     )
 
+
+def yearly_summary(db: Session, owner: models.User, year: int) -> schemas.YearlySummary:
+    rows = db.execute(
+        select(extract("month", models.Expense.spent_on), func.sum(models.Expense.amount))
+        .where(
+            models.Expense.owner_id == owner.id,
+            extract("year", models.Expense.spent_on) == year,
+        )
+        .group_by(extract("month", models.Expense.spent_on))
+        .order_by(extract("month", models.Expense.spent_on))
+    ).all()
+    months = [
+        schemas.MonthSummary(month=int(month), total=round(float(total or 0), 2))
+        for month, total in rows
+    ]
+    return schemas.YearlySummary(
+        year=year,
+        total=round(sum(item.total for item in months), 2),
+        months=months,
+    )
