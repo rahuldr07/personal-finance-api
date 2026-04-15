@@ -8,7 +8,11 @@ from finance_api import models, schemas, services
 from finance_api.database import get_db
 from finance_api.dependencies import get_current_user
 
-router = APIRouter(prefix="/expenses", tags=["expenses"])
+router = APIRouter(
+    prefix="/expenses",
+    tags=["expenses"],
+    responses={401: {"model": schemas.ErrorResponse}, 404: {"model": schemas.ErrorResponse}},
+)
 
 
 @router.post("", response_model=schemas.ExpenseRead, status_code=status.HTTP_201_CREATED)
@@ -31,6 +35,18 @@ def list_expenses(
     limit: int = Query(default=50, ge=1, le=200),
 ):
     return services.list_expenses(db, user, category, start_date, end_date, skip, limit)
+
+
+@router.get("/{expense_id}", response_model=schemas.ExpenseRead)
+def get_expense(
+    expense_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    expense = services.get_expense(db, user, expense_id)
+    if expense is None:
+        raise HTTPException(status_code=404, detail="Expense not found")
+    return expense
 
 
 @router.patch("/{expense_id}", response_model=schemas.ExpenseRead)
@@ -57,4 +73,3 @@ def delete_expense(
         raise HTTPException(status_code=404, detail="Expense not found")
     services.delete_expense(db, expense)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
