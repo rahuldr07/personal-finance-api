@@ -9,7 +9,11 @@ from finance_api import schemas, services
 from finance_api.database import get_db
 from finance_api.security import create_access_token
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(
+    prefix="/auth",
+    tags=["auth"],
+    responses={401: {"model": schemas.ErrorResponse}, 409: {"model": schemas.ErrorResponse}},
+)
 
 
 @router.post("/register", response_model=schemas.UserRead, status_code=status.HTTP_201_CREATED)
@@ -30,4 +34,3 @@ def login(
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     return schemas.Token(access_token=create_access_token(user.email))
-
