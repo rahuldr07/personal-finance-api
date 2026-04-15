@@ -23,6 +23,10 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
+class ErrorResponse(BaseModel):
+    detail: str
+
+
 class ExpenseCreate(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     amount: float = Field(gt=0)
@@ -61,4 +65,3 @@ class MonthlySummary(BaseModel):
     month: int
     total: float
     categories: list[CategorySummary]
-
