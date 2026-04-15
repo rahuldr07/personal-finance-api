@@ -65,3 +65,14 @@ class MonthlySummary(BaseModel):
     month: int
     total: float
     categories: list[CategorySummary]
+
+
+class MonthSummary(BaseModel):
+    month: int
+    total: float
+
+
+class YearlySummary(BaseModel):
+    year: int
+    total: float
+    months: list[MonthSummary]
