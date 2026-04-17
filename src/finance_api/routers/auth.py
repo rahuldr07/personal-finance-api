@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 
 from finance_api import schemas, services
 from finance_api.database import get_db
+from finance_api.dependencies import get_current_user
+from finance_api.models import User
 from finance_api.security import create_access_token
 
 router = APIRouter(
@@ -34,3 +36,8 @@ def login(
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     return schemas.Token(access_token=create_access_token(user.email))
+
+
+@router.get("/me", response_model=schemas.UserRead)
+def read_current_user(user: Annotated[User, Depends(get_current_user)]):
+    return user
