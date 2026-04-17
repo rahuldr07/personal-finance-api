@@ -1,11 +1,16 @@
 from pathlib import Path
+from typing import Annotated
 
 import httpx
 import typer
 
 app = typer.Typer(help="CLI client for the Personal Finance API.")
 STATE_FILE = Path.home() / ".finance-cli-token"
-API_URL = "http://127.0.0.1:8000"
+DEFAULT_API_URL = "http://127.0.0.1:8000"
+
+
+def api_url() -> str:
+    return DEFAULT_API_URL
 
 
 def auth_headers() -> dict[str, str]:
@@ -15,9 +20,20 @@ def auth_headers() -> dict[str, str]:
 
 
 @app.command()
+def register(email: str, password: str) -> None:
+    response = httpx.post(
+        f"{api_url()}/auth/register",
+        json={"email": email, "password": password},
+        timeout=10,
+    )
+    response.raise_for_status()
+    typer.echo(f"Registered {response.json()['email']}")
+
+
+@app.command()
 def login(email: str, password: str) -> None:
     response = httpx.post(
-        f"{API_URL}/auth/login",
+        f"{api_url()}/auth/login",
         data={"username": email, "password": password},
         timeout=10,
     )
@@ -29,7 +45,7 @@ def login(email: str, password: str) -> None:
 @app.command("add")
 def add_expense(title: str, amount: float, category: str, spent_on: str, note: str = "") -> None:
     response = httpx.post(
-        f"{API_URL}/expenses",
+        f"{api_url()}/expenses",
         headers=auth_headers(),
         json={
             "title": title,
@@ -46,7 +62,7 @@ def add_expense(title: str, amount: float, category: str, spent_on: str, note: s
 
 @app.command("list")
 def list_expenses() -> None:
-    response = httpx.get(f"{API_URL}/expenses", headers=auth_headers(), timeout=10)
+    response = httpx.get(f"{api_url()}/expenses", headers=auth_headers(), timeout=10)
     response.raise_for_status()
     for item in response.json():
         typer.echo(f"{item['id']}: {item['spent_on']} {item['category']} {item['amount']} - {item['title']}")
@@ -55,7 +71,7 @@ def list_expenses() -> None:
 @app.command()
 def summary(year: int, month: int) -> None:
     response = httpx.get(
-        f"{API_URL}/reports/monthly",
+        f"{api_url()}/reports/monthly",
         headers=auth_headers(),
         params={"year": year, "month": month},
         timeout=10,
@@ -66,3 +82,10 @@ def summary(year: int, month: int) -> None:
     for row in data["categories"]:
         typer.echo(f"{row['category']}: {row['total']}")
 
+
+@app.command("export")
+def export_csv(output: Annotated[Path, typer.Option("--output", "-o")] = Path("expenses.csv")) -> None:
+    response = httpx.get(f"{api_url()}/reports/export.csv", headers=auth_headers(), timeout=10)
+    response.raise_for_status()
+    output.write_text(response.text)
+    typer.echo(f"Wrote {output}")
