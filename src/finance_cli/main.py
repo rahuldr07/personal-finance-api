@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Annotated
+import os
 
 import httpx
 import typer
@@ -10,7 +11,7 @@ DEFAULT_API_URL = "http://127.0.0.1:8000"
 
 
 def api_url() -> str:
-    return DEFAULT_API_URL
+    return os.getenv("FINANCE_API_URL", DEFAULT_API_URL).rstrip("/")
 
 
 def auth_headers() -> dict[str, str]:
