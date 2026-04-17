@@ -107,3 +107,21 @@ def test_monthly_summary():
     response = client.get("/reports/monthly?year=2026&month=5", headers=headers)
     assert response.status_code == 200
     assert response.json()["total"] >= 30
+
+
+def test_yearly_summary():
+    headers = auth_headers("yearly@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Course",
+            "amount": 99,
+            "category": "education",
+            "spent_on": "2026-01-20",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/reports/yearly?year=2026", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["total"] >= 99
