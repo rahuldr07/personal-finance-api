@@ -51,6 +51,25 @@ def test_create_and_list_expense():
     assert len(listed.json()) >= 1
 
 
+def test_get_single_expense():
+    headers = auth_headers("expense-detail@example.com")
+    created = client.post(
+        "/expenses",
+        json={
+            "title": "Coffee",
+            "amount": 5.25,
+            "category": "food",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+    expense_id = created.json()["id"]
+
+    response = client.get(f"/expenses/{expense_id}", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["title"] == "Coffee"
+
+
 def test_update_and_delete_expense():
     headers = auth_headers("expense-update@example.com")
     created = client.post(
