@@ -125,3 +125,22 @@ def test_yearly_summary():
     response = client.get("/reports/yearly?year=2026", headers=headers)
     assert response.status_code == 200
     assert response.json()["total"] >= 99
+
+
+def test_csv_export():
+    headers = auth_headers("export@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Notebook",
+            "amount": 8.5,
+            "category": "education",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/reports/export.csv?year=2026&month=5", headers=headers)
+    assert response.status_code == 200
+    assert "text/csv" in response.headers["content-type"]
+    assert "Notebook" in response.text
