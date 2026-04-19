@@ -19,4 +19,14 @@
 ## Reports
 
 - `GET /reports/monthly?year=2026&month=5` returns monthly totals grouped by category.
+- `GET /reports/yearly?year=2026` returns totals grouped by month.
+- `GET /reports/export.csv` exports expenses as CSV.
 
+## CLI
+
+- `finance-cli register EMAIL PASSWORD` creates an account.
+- `finance-cli login EMAIL PASSWORD` stores an access token.
+- `finance-cli add TITLE AMOUNT CATEGORY SPENT_ON` creates an expense.
+- `finance-cli list` prints recent expenses.
+- `finance-cli summary YEAR MONTH` prints monthly totals.
+- `finance-cli export --output expenses.csv` exports expense data.
