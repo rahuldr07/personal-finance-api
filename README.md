@@ -9,6 +9,7 @@ testing backend development workflows.
 - Expense create, list, update, and delete endpoints
 - Category and date filters
 - Monthly reports grouped by category
+- Yearly reports and CSV export
 - Small CLI client for common actions
 - SQLite local persistence
 - Tests and Docker support
@@ -29,6 +30,16 @@ Open `http://127.0.0.1:8000/docs` for interactive API docs.
 
 ```bash
 pytest
+```
+
+## CLI Examples
+
+```bash
+finance-cli register dev@example.com password123
+finance-cli login dev@example.com password123
+finance-cli add "Lunch" 12.5 food 2026-05-17
+finance-cli summary 2026 5
+finance-cli export --output expenses.csv
 ```
 
 ## Project Structure
