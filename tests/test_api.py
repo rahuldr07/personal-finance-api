@@ -144,3 +144,18 @@ def test_csv_export():
     assert response.status_code == 200
     assert "text/csv" in response.headers["content-type"]
     assert "Notebook" in response.text
+
+
+def test_create_and_list_budgets():
+    headers = auth_headers("budget@example.com")
+    created = client.post(
+        "/budgets",
+        json={"category": "food", "monthly_limit": 500},
+        headers=headers,
+    )
+    assert created.status_code == 201
+    assert created.json()["category"] == "food"
+
+    response = client.get("/budgets", headers=headers)
+    assert response.status_code == 200
+    assert any(item["category"] == "food" for item in response.json())
