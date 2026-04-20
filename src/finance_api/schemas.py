@@ -76,3 +76,17 @@ class YearlySummary(BaseModel):
     year: int
     total: float
     months: list[MonthSummary]
+
+
+class BudgetCreate(BaseModel):
+    category: ExpenseCategory
+    monthly_limit: float = Field(gt=0)
+
+
+class BudgetRead(BaseModel):
+    id: int
+    category: ExpenseCategory
+    monthly_limit: float
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
