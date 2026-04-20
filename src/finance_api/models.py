@@ -42,3 +42,12 @@ class Expense(Base):
 
     owner: Mapped[User] = relationship(back_populates="expenses")
 
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    category: Mapped[ExpenseCategory] = mapped_column(Enum(ExpenseCategory), nullable=False)
+    monthly_limit: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
