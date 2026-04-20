@@ -125,3 +125,16 @@ def yearly_summary(db: Session, owner: models.User, year: int) -> schemas.Yearly
         total=round(sum(item.total for item in months), 2),
         months=months,
     )
+
+
+def create_budget(db: Session, owner: models.User, payload: schemas.BudgetCreate) -> models.Budget:
+    budget = models.Budget(owner_id=owner.id, **payload.model_dump())
+    db.add(budget)
+    db.commit()
+    db.refresh(budget)
+    return budget
+
+
+def list_budgets(db: Session, owner: models.User) -> list[models.Budget]:
+    query = select(models.Budget).where(models.Budget.owner_id == owner.id).order_by(models.Budget.category)
+    return list(db.scalars(query))
