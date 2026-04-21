@@ -44,6 +44,8 @@ def list_expenses(
     category: models.ExpenseCategory | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    min_amount: float | None = None,
+    max_amount: float | None = None,
     skip: int = 0,
     limit: int = 50,
 ) -> list[models.Expense]:
@@ -54,6 +56,10 @@ def list_expenses(
         query = query.where(models.Expense.spent_on >= start_date)
     if end_date:
         query = query.where(models.Expense.spent_on <= end_date)
+    if min_amount is not None:
+        query = query.where(models.Expense.amount >= min_amount)
+    if max_amount is not None:
+        query = query.where(models.Expense.amount <= max_amount)
     query = query.order_by(models.Expense.spent_on.desc(), models.Expense.id.desc()).offset(skip).limit(limit)
     return list(db.scalars(query))
 
