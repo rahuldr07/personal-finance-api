@@ -31,10 +31,22 @@ def list_expenses(
     category: models.ExpenseCategory | None = None,
     start_date: date | None = None,
     end_date: date | None = None,
+    min_amount: float | None = Query(default=None, ge=0),
+    max_amount: float | None = Query(default=None, ge=0),
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=50, ge=1, le=200),
 ):
-    return services.list_expenses(db, user, category, start_date, end_date, skip, limit)
+    return services.list_expenses(
+        db,
+        user,
+        category,
+        start_date,
+        end_date,
+        min_amount,
+        max_amount,
+        skip,
+        limit,
+    )
 
 
 @router.get("/{expense_id}", response_model=schemas.ExpenseRead)
