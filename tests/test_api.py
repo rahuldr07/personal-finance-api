@@ -69,6 +69,25 @@ def test_filter_expenses_by_amount_range():
     assert any(item["title"] == "Large purchase" for item in response.json())
 
 
+def test_search_expenses_by_text():
+    headers = auth_headers("expense-search@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Gym membership",
+            "amount": 45,
+            "category": "health",
+            "spent_on": "2026-05-17",
+            "note": "monthly fitness plan",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/expenses?search=fitness", headers=headers)
+    assert response.status_code == 200
+    assert any(item["title"] == "Gym membership" for item in response.json())
+
+
 def test_get_single_expense():
     headers = auth_headers("expense-detail@example.com")
     created = client.post(
