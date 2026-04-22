@@ -15,6 +15,11 @@ router = APIRouter(
 )
 
 
+@router.get("/meta/categories", response_model=list[str])
+def list_categories():
+    return [category.value for category in models.ExpenseCategory]
+
+
 @router.post("", response_model=schemas.ExpenseRead, status_code=status.HTTP_201_CREATED)
 def create_expense(
     payload: schemas.ExpenseCreate,
