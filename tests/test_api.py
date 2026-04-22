@@ -51,6 +51,12 @@ def test_create_and_list_expense():
     assert len(listed.json()) >= 1
 
 
+def test_list_expense_categories():
+    response = client.get("/expenses/meta/categories")
+    assert response.status_code == 200
+    assert "food" in response.json()
+
+
 def test_filter_expenses_by_amount_range():
     headers = auth_headers("expense-filter@example.com")
     client.post(
