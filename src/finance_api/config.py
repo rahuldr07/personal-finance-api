@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     app_name: str = "Personal Finance API"
+    app_version: str = "0.1.0"
     database_url: str = "sqlite:///./finance.db"
     secret_key: str = "change-this-local-secret"
     access_token_expire_minutes: int = 60
@@ -15,4 +16,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-
