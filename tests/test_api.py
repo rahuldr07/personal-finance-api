@@ -51,6 +51,24 @@ def test_create_and_list_expense():
     assert len(listed.json()) >= 1
 
 
+def test_filter_expenses_by_amount_range():
+    headers = auth_headers("expense-filter@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Large purchase",
+            "amount": 250,
+            "category": "shopping",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/expenses?min_amount=200&max_amount=300", headers=headers)
+    assert response.status_code == 200
+    assert any(item["title"] == "Large purchase" for item in response.json())
+
+
 def test_get_single_expense():
     headers = auth_headers("expense-detail@example.com")
     created = client.post(
