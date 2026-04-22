@@ -33,6 +33,7 @@ def list_expenses(
     end_date: date | None = None,
     min_amount: float | None = Query(default=None, ge=0),
     max_amount: float | None = Query(default=None, ge=0),
+    search: str | None = Query(default=None, min_length=1, max_length=80),
     skip: int = Query(default=0, ge=0),
     limit: int = Query(default=50, ge=1, le=200),
 ):
@@ -44,6 +45,7 @@ def list_expenses(
         end_date,
         min_amount,
         max_amount,
+        search,
         skip,
         limit,
     )
