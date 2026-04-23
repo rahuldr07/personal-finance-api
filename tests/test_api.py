@@ -20,7 +20,8 @@ def auth_headers(email: str = "dev@example.com") -> dict[str, str]:
 def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    assert response.json()["status"] == "ok"
+    assert response.json()["version"] == "0.1.0"
 
 
 def test_register_and_login_user():
