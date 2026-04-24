@@ -150,3 +150,12 @@ def create_budget(db: Session, owner: models.User, payload: schemas.BudgetCreate
 def list_budgets(db: Session, owner: models.User) -> list[models.Budget]:
     query = select(models.Budget).where(models.Budget.owner_id == owner.id).order_by(models.Budget.category)
     return list(db.scalars(query))
+
+
+def get_budget(db: Session, owner: models.User, budget_id: int) -> models.Budget | None:
+    return db.scalar(
+        select(models.Budget).where(
+            models.Budget.id == budget_id,
+            models.Budget.owner_id == owner.id,
+        )
+    )
