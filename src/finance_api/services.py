@@ -171,3 +171,8 @@ def update_budget(
     db.commit()
     db.refresh(budget)
     return budget
+
+
+def delete_budget(db: Session, budget: models.Budget) -> None:
+    db.delete(budget)
+    db.commit()
