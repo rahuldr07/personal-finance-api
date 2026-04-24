@@ -83,6 +83,11 @@ class BudgetCreate(BaseModel):
     monthly_limit: float = Field(gt=0)
 
 
+class BudgetUpdate(BaseModel):
+    category: ExpenseCategory | None = None
+    monthly_limit: float | None = Field(default=None, gt=0)
+
+
 class BudgetRead(BaseModel):
     id: int
     category: ExpenseCategory
