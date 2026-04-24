@@ -159,3 +159,15 @@ def get_budget(db: Session, owner: models.User, budget_id: int) -> models.Budget
             models.Budget.owner_id == owner.id,
         )
     )
+
+
+def update_budget(
+    db: Session,
+    budget: models.Budget,
+    payload: schemas.BudgetUpdate,
+) -> models.Budget:
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(budget, field, value)
+    db.commit()
+    db.refresh(budget)
+    return budget
