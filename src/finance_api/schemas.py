@@ -95,3 +95,11 @@ class BudgetRead(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class BudgetStatus(BaseModel):
+    category: ExpenseCategory
+    monthly_limit: float
+    spent: float
+    remaining: float
+    over_limit: bool
