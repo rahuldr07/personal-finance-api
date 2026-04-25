@@ -41,3 +41,16 @@ def get_budget(
     if budget is None:
         raise HTTPException(status_code=404, detail="Budget not found")
     return budget
+
+
+@router.patch("/{budget_id}", response_model=schemas.BudgetRead)
+def update_budget(
+    budget_id: int,
+    payload: schemas.BudgetUpdate,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    budget = services.get_budget(db, user, budget_id)
+    if budget is None:
+        raise HTTPException(status_code=404, detail="Budget not found")
+    return services.update_budget(db, budget, payload)
