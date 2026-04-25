@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from finance_api import models, schemas, services
@@ -54,3 +54,16 @@ def update_budget(
     if budget is None:
         raise HTTPException(status_code=404, detail="Budget not found")
     return services.update_budget(db, budget, payload)
+
+
+@router.delete("/{budget_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_budget(
+    budget_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+):
+    budget = services.get_budget(db, user, budget_id)
+    if budget is None:
+        raise HTTPException(status_code=404, detail="Budget not found")
+    services.delete_budget(db, budget)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
