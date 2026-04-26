@@ -176,3 +176,34 @@ def update_budget(
 def delete_budget(db: Session, budget: models.Budget) -> None:
     db.delete(budget)
     db.commit()
+
+
+def budget_status(
+    db: Session,
+    owner: models.User,
+    year: int,
+    month: int,
+) -> list[schemas.BudgetStatus]:
+    budgets = list_budgets(db, owner)
+    statuses: list[schemas.BudgetStatus] = []
+    for budget in budgets:
+        spent = db.scalar(
+            select(func.sum(models.Expense.amount)).where(
+                models.Expense.owner_id == owner.id,
+                models.Expense.category == budget.category,
+                extract("year", models.Expense.spent_on) == year,
+                extract("month", models.Expense.spent_on) == month,
+            )
+        )
+        spent_total = round(float(spent or 0), 2)
+        remaining = round(budget.monthly_limit - spent_total, 2)
+        statuses.append(
+            schemas.BudgetStatus(
+                category=budget.category,
+                monthly_limit=budget.monthly_limit,
+                spent=spent_total,
+                remaining=remaining,
+                over_limit=remaining < 0,
+            )
+        )
+    return statuses
