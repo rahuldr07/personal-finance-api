@@ -31,6 +31,16 @@ def list_budgets(
     return services.list_budgets(db, user)
 
 
+@router.get("/status/monthly", response_model=list[schemas.BudgetStatus])
+def get_budget_status(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+    year: int,
+    month: int,
+):
+    return services.budget_status(db, user, year, month)
+
+
 @router.get("/{budget_id}", response_model=schemas.BudgetRead)
 def get_budget(
     budget_id: int,
