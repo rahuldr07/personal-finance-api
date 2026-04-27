@@ -90,3 +90,15 @@ def export_csv(output: Annotated[Path, typer.Option("--output", "-o")] = Path("e
     response.raise_for_status()
     output.write_text(response.text)
     typer.echo(f"Wrote {output}")
+
+
+@app.command("budget-add")
+def add_budget(category: str, monthly_limit: float) -> None:
+    response = httpx.post(
+        f"{api_url()}/budgets",
+        headers=auth_headers(),
+        json={"category": category, "monthly_limit": monthly_limit},
+        timeout=10,
+    )
+    response.raise_for_status()
+    typer.echo(f"Created budget #{response.json()['id']}")
