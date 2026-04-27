@@ -203,3 +203,17 @@ def test_create_and_list_budgets():
     response = client.get("/budgets", headers=headers)
     assert response.status_code == 200
     assert any(item["category"] == "food" for item in response.json())
+
+
+def test_update_budget():
+    headers = auth_headers("budget-update@example.com")
+    created = client.post(
+        "/budgets",
+        json={"category": "travel", "monthly_limit": 200},
+        headers=headers,
+    )
+    budget_id = created.json()["id"]
+
+    response = client.patch(f"/budgets/{budget_id}", json={"monthly_limit": 250}, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["monthly_limit"] == 250
