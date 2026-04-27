@@ -217,3 +217,19 @@ def test_update_budget():
     response = client.patch(f"/budgets/{budget_id}", json={"monthly_limit": 250}, headers=headers)
     assert response.status_code == 200
     assert response.json()["monthly_limit"] == 250
+
+
+def test_delete_budget():
+    headers = auth_headers("budget-delete@example.com")
+    created = client.post(
+        "/budgets",
+        json={"category": "bills", "monthly_limit": 1000},
+        headers=headers,
+    )
+    budget_id = created.json()["id"]
+
+    deleted = client.delete(f"/budgets/{budget_id}", headers=headers)
+    assert deleted.status_code == 204
+
+    missing = client.get(f"/budgets/{budget_id}", headers=headers)
+    assert missing.status_code == 404
