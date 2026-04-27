@@ -233,3 +233,22 @@ def test_delete_budget():
 
     missing = client.get(f"/budgets/{budget_id}", headers=headers)
     assert missing.status_code == 404
+
+
+def test_budget_status_marks_remaining_amount():
+    headers = auth_headers("budget-status@example.com")
+    client.post("/budgets", json={"category": "food", "monthly_limit": 100}, headers=headers)
+    client.post(
+        "/expenses",
+        json={
+            "title": "Dinner",
+            "amount": 40,
+            "category": "food",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/budgets/status/monthly?year=2026&month=5", headers=headers)
+    assert response.status_code == 200
+    assert response.json()[0]["remaining"] == 60
