@@ -103,3 +103,11 @@ class BudgetStatus(BaseModel):
     spent: float
     remaining: float
     over_limit: bool
+
+
+class TopExpense(BaseModel):
+    id: int
+    title: str
+    amount: float
+    category: ExpenseCategory
+    spent_on: date
