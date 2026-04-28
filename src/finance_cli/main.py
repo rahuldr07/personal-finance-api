@@ -102,3 +102,11 @@ def add_budget(category: str, monthly_limit: float) -> None:
     )
     response.raise_for_status()
     typer.echo(f"Created budget #{response.json()['id']}")
+
+
+@app.command("budget-list")
+def list_budgets() -> None:
+    response = httpx.get(f"{api_url()}/budgets", headers=auth_headers(), timeout=10)
+    response.raise_for_status()
+    for item in response.json():
+        typer.echo(f"{item['id']}: {item['category']} limit {item['monthly_limit']}")
