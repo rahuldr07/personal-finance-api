@@ -110,3 +110,19 @@ def list_budgets() -> None:
     response.raise_for_status()
     for item in response.json():
         typer.echo(f"{item['id']}: {item['category']} limit {item['monthly_limit']}")
+
+
+@app.command("budget-status")
+def budget_status(year: int, month: int) -> None:
+    response = httpx.get(
+        f"{api_url()}/budgets/status/monthly",
+        headers=auth_headers(),
+        params={"year": year, "month": month},
+        timeout=10,
+    )
+    response.raise_for_status()
+    for item in response.json():
+        typer.echo(
+            f"{item['category']}: spent {item['spent']} / {item['monthly_limit']}, "
+            f"remaining {item['remaining']}"
+        )
