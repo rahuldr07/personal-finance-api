@@ -62,8 +62,14 @@ def add_expense(title: str, amount: float, category: str, spent_on: str, note: s
 
 
 @app.command("list")
-def list_expenses() -> None:
-    response = httpx.get(f"{api_url()}/expenses", headers=auth_headers(), timeout=10)
+def list_expenses(category: str | None = None, search: str | None = None) -> None:
+    params = {"category": category, "search": search}
+    response = httpx.get(
+        f"{api_url()}/expenses",
+        headers=auth_headers(),
+        params={key: value for key, value in params.items() if value},
+        timeout=10,
+    )
     response.raise_for_status()
     for item in response.json():
         typer.echo(f"{item['id']}: {item['spent_on']} {item['category']} {item['amount']} - {item['title']}")
