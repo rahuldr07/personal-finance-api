@@ -35,6 +35,15 @@ def get_yearly_summary(
     return services.yearly_summary(db, user, year)
 
 
+@router.get("/top-expenses", response_model=list[schemas.TopExpense])
+def get_top_expenses(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+    limit: int = Query(default=5, ge=1, le=25),
+):
+    return services.top_expenses(db, user, limit)
+
+
 @router.get("/export.csv", response_class=Response)
 def export_expenses_csv(
     db: Annotated[Session, Depends(get_db)],
