@@ -207,3 +207,22 @@ def budget_status(
             )
         )
     return statuses
+
+
+def top_expenses(db: Session, owner: models.User, limit: int = 5) -> list[schemas.TopExpense]:
+    query = (
+        select(models.Expense)
+        .where(models.Expense.owner_id == owner.id)
+        .order_by(models.Expense.amount.desc(), models.Expense.spent_on.desc())
+        .limit(limit)
+    )
+    return [
+        schemas.TopExpense(
+            id=expense.id,
+            title=expense.title,
+            amount=expense.amount,
+            category=expense.category,
+            spent_on=expense.spent_on,
+        )
+        for expense in db.scalars(query)
+    ]
