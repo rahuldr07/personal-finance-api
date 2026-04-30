@@ -226,3 +226,17 @@ def top_expenses(db: Session, owner: models.User, limit: int = 5) -> list[schema
         )
         for expense in db.scalars(query)
     ]
+
+
+def category_shares(db: Session, owner: models.User, year: int, month: int) -> list[schemas.CategoryShare]:
+    summary = monthly_summary(db, owner, year, month)
+    if summary.total == 0:
+        return []
+    return [
+        schemas.CategoryShare(
+            category=item.category,
+            total=item.total,
+            percentage=round((item.total / summary.total) * 100, 2),
+        )
+        for item in summary.categories
+    ]
