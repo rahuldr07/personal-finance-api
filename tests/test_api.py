@@ -190,6 +190,42 @@ def test_csv_export():
     assert "Notebook" in response.text
 
 
+def test_top_expenses_report():
+    headers = auth_headers("top-expenses@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Laptop stand",
+            "amount": 65,
+            "category": "shopping",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/reports/top-expenses?limit=1", headers=headers)
+    assert response.status_code == 200
+    assert response.json()[0]["title"] == "Laptop stand"
+
+
+def test_category_share_report():
+    headers = auth_headers("category-share@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Groceries",
+            "amount": 75,
+            "category": "food",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/reports/category-shares?year=2026&month=5", headers=headers)
+    assert response.status_code == 200
+    assert response.json()[0]["percentage"] == 100
+
+
 def test_create_and_list_budgets():
     headers = auth_headers("budget@example.com")
     created = client.post(
