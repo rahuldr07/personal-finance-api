@@ -111,3 +111,9 @@ class TopExpense(BaseModel):
     amount: float
     category: ExpenseCategory
     spent_on: date
+
+
+class CategoryShare(BaseModel):
+    category: ExpenseCategory
+    total: float
+    percentage: float
