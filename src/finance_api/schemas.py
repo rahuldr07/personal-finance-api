@@ -2,7 +2,7 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
-from finance_api.models import ExpenseCategory
+from finance_api.models import ExpenseCategory, RecurrenceFrequency
 
 
 class UserCreate(BaseModel):
@@ -103,6 +103,37 @@ class BudgetStatus(BaseModel):
     spent: float
     remaining: float
     over_limit: bool
+
+
+class RecurringExpenseCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=120)
+    amount: float = Field(gt=0)
+    category: ExpenseCategory = ExpenseCategory.other
+    frequency: RecurrenceFrequency
+    next_due_on: date
+    note: str | None = Field(default=None, max_length=500)
+
+
+class RecurringExpenseUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=120)
+    amount: float | None = Field(default=None, gt=0)
+    category: ExpenseCategory | None = None
+    frequency: RecurrenceFrequency | None = None
+    next_due_on: date | None = None
+    note: str | None = Field(default=None, max_length=500)
+
+
+class RecurringExpenseRead(BaseModel):
+    id: int
+    title: str
+    amount: float
+    category: ExpenseCategory
+    frequency: RecurrenceFrequency
+    next_due_on: date
+    note: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 class TopExpense(BaseModel):
