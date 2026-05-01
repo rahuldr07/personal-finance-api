@@ -209,6 +209,27 @@ def budget_status(
     return statuses
 
 
+def create_recurring_expense(
+    db: Session,
+    owner: models.User,
+    payload: schemas.RecurringExpenseCreate,
+) -> models.RecurringExpense:
+    recurring = models.RecurringExpense(owner_id=owner.id, **payload.model_dump())
+    db.add(recurring)
+    db.commit()
+    db.refresh(recurring)
+    return recurring
+
+
+def list_recurring_expenses(db: Session, owner: models.User) -> list[models.RecurringExpense]:
+    query = (
+        select(models.RecurringExpense)
+        .where(models.RecurringExpense.owner_id == owner.id)
+        .order_by(models.RecurringExpense.next_due_on.asc(), models.RecurringExpense.id.asc())
+    )
+    return list(db.scalars(query))
+
+
 def top_expenses(db: Session, owner: models.User, limit: int = 5) -> list[schemas.TopExpense]:
     query = (
         select(models.Expense)
