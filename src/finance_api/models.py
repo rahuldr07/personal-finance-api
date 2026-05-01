@@ -17,6 +17,12 @@ class ExpenseCategory(StrEnum):
     other = "other"
 
 
+class RecurrenceFrequency(StrEnum):
+    weekly = "weekly"
+    monthly = "monthly"
+    yearly = "yearly"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -50,4 +56,18 @@ class Budget(Base):
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     category: Mapped[ExpenseCategory] = mapped_column(Enum(ExpenseCategory), nullable=False)
     monthly_limit: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+
+class RecurringExpense(Base):
+    __tablename__ = "recurring_expenses"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(120), nullable=False)
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
+    category: Mapped[ExpenseCategory] = mapped_column(Enum(ExpenseCategory), nullable=False)
+    frequency: Mapped[RecurrenceFrequency] = mapped_column(Enum(RecurrenceFrequency), nullable=False)
+    next_due_on: Mapped[date] = mapped_column(Date, nullable=False)
+    note: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
