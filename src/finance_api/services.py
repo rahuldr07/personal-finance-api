@@ -230,6 +230,36 @@ def list_recurring_expenses(db: Session, owner: models.User) -> list[models.Recu
     return list(db.scalars(query))
 
 
+def get_recurring_expense(
+    db: Session,
+    owner: models.User,
+    recurring_id: int,
+) -> models.RecurringExpense | None:
+    return db.scalar(
+        select(models.RecurringExpense).where(
+            models.RecurringExpense.id == recurring_id,
+            models.RecurringExpense.owner_id == owner.id,
+        )
+    )
+
+
+def update_recurring_expense(
+    db: Session,
+    recurring: models.RecurringExpense,
+    payload: schemas.RecurringExpenseUpdate,
+) -> models.RecurringExpense:
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(recurring, field, value)
+    db.commit()
+    db.refresh(recurring)
+    return recurring
+
+
+def delete_recurring_expense(db: Session, recurring: models.RecurringExpense) -> None:
+    db.delete(recurring)
+    db.commit()
+
+
 def top_expenses(db: Session, owner: models.User, limit: int = 5) -> list[schemas.TopExpense]:
     query = (
         select(models.Expense)
