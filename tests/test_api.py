@@ -288,3 +288,24 @@ def test_budget_status_marks_remaining_amount():
     response = client.get("/budgets/status/monthly?year=2026&month=5", headers=headers)
     assert response.status_code == 200
     assert response.json()[0]["remaining"] == 60
+
+
+def test_create_and_list_recurring_expenses():
+    headers = auth_headers("recurring-list@example.com")
+    created = client.post(
+        "/recurring-expenses",
+        json={
+            "title": "Internet bill",
+            "amount": 49.99,
+            "category": "bills",
+            "frequency": "monthly",
+            "next_due_on": "2026-06-01",
+        },
+        headers=headers,
+    )
+    assert created.status_code == 201
+    assert created.json()["frequency"] == "monthly"
+
+    response = client.get("/recurring-expenses", headers=headers)
+    assert response.status_code == 200
+    assert any(item["title"] == "Internet bill" for item in response.json())
