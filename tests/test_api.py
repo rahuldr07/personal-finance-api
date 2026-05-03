@@ -309,3 +309,30 @@ def test_create_and_list_recurring_expenses():
     response = client.get("/recurring-expenses", headers=headers)
     assert response.status_code == 200
     assert any(item["title"] == "Internet bill" for item in response.json())
+
+
+def test_update_and_delete_recurring_expense():
+    headers = auth_headers("recurring-update@example.com")
+    created = client.post(
+        "/recurring-expenses",
+        json={
+            "title": "Streaming",
+            "amount": 9.99,
+            "category": "other",
+            "frequency": "monthly",
+            "next_due_on": "2026-06-10",
+        },
+        headers=headers,
+    )
+    recurring_id = created.json()["id"]
+
+    updated = client.patch(
+        f"/recurring-expenses/{recurring_id}",
+        json={"amount": 12.99},
+        headers=headers,
+    )
+    assert updated.status_code == 200
+    assert updated.json()["amount"] == 12.99
+
+    deleted = client.delete(f"/recurring-expenses/{recurring_id}", headers=headers)
+    assert deleted.status_code == 204
