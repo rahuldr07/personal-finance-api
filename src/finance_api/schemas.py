@@ -148,3 +148,11 @@ class CategoryShare(BaseModel):
     category: ExpenseCategory
     total: float
     percentage: float
+
+
+class SpendingInsights(BaseModel):
+    expense_count: int
+    total_spent: float
+    average_expense: float
+    largest_expense: float
+    highest_category: ExpenseCategory | None
