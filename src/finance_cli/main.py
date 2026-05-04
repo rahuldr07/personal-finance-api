@@ -161,3 +161,18 @@ def list_recurring() -> None:
             f"{item['id']}: {item['next_due_on']} {item['frequency']} "
             f"{item['category']} {item['amount']} - {item['title']}"
         )
+
+
+@app.command("insights")
+def insights(year: int, month: int) -> None:
+    response = httpx.get(
+        f"{api_url()}/reports/insights",
+        headers=auth_headers(),
+        params={"year": year, "month": month},
+        timeout=10,
+    )
+    response.raise_for_status()
+    data = response.json()
+    typer.echo(f"Total spent: {data['total_spent']}")
+    typer.echo(f"Average expense: {data['average_expense']}")
+    typer.echo(f"Largest expense: {data['largest_expense']}")
