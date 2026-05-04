@@ -226,6 +226,25 @@ def test_category_share_report():
     assert response.json()[0]["percentage"] == 100
 
 
+def test_spending_insights_report():
+    headers = auth_headers("insights@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Shoes",
+            "amount": 120,
+            "category": "shopping",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get("/reports/insights?year=2026&month=5", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["expense_count"] == 1
+    assert response.json()["largest_expense"] == 120
+
+
 def test_create_and_list_budgets():
     headers = auth_headers("budget@example.com")
     created = client.post(
