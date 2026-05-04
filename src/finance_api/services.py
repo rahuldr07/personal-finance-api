@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import date
 
 from sqlalchemy import extract, func, select
@@ -298,7 +299,7 @@ def spending_insights(db: Session, owner: models.User, year: int, month: int) ->
         db,
         owner,
         start_date=date(year, month, 1),
-        end_date=date(year, month, 31),
+        end_date=date(year, month, monthrange(year, month)[1]),
         limit=500,
     )
     total = round(sum(expense.amount for expense in expenses), 2)
