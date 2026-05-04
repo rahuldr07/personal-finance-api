@@ -291,3 +291,25 @@ def category_shares(db: Session, owner: models.User, year: int, month: int) -> l
         )
         for item in summary.categories
     ]
+
+
+def spending_insights(db: Session, owner: models.User, year: int, month: int) -> schemas.SpendingInsights:
+    expenses = list_expenses(
+        db,
+        owner,
+        start_date=date(year, month, 1),
+        end_date=date(year, month, 31),
+        limit=500,
+    )
+    total = round(sum(expense.amount for expense in expenses), 2)
+    average = round(total / len(expenses), 2) if expenses else 0
+    largest = round(max((expense.amount for expense in expenses), default=0), 2)
+    shares = category_shares(db, owner, year, month)
+    highest = max(shares, key=lambda item: item.total).category if shares else None
+    return schemas.SpendingInsights(
+        expense_count=len(expenses),
+        total_spent=total,
+        average_expense=average,
+        largest_expense=largest,
+        highest_category=highest,
+    )
