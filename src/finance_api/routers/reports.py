@@ -54,6 +54,16 @@ def get_category_shares(
     return services.category_shares(db, user, year, month)
 
 
+@router.get("/insights", response_model=schemas.SpendingInsights)
+def get_spending_insights(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+    year: int = Query(ge=2000, le=2100),
+    month: int = Query(ge=1, le=12),
+):
+    return services.spending_insights(db, user, year, month)
+
+
 @router.get("/export.csv", response_class=Response)
 def export_expenses_csv(
     db: Annotated[Session, Depends(get_db)],
