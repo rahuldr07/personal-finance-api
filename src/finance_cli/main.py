@@ -132,3 +132,21 @@ def budget_status(year: int, month: int) -> None:
             f"{item['category']}: spent {item['spent']} / {item['monthly_limit']}, "
             f"remaining {item['remaining']}"
         )
+
+
+@app.command("recurring-add")
+def add_recurring(title: str, amount: float, category: str, frequency: str, next_due_on: str) -> None:
+    response = httpx.post(
+        f"{api_url()}/recurring-expenses",
+        headers=auth_headers(),
+        json={
+            "title": title,
+            "amount": amount,
+            "category": category,
+            "frequency": frequency,
+            "next_due_on": next_due_on,
+        },
+        timeout=10,
+    )
+    response.raise_for_status()
+    typer.echo(f"Created recurring expense #{response.json()['id']}")
