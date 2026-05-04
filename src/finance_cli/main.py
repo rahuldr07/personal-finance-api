@@ -150,3 +150,14 @@ def add_recurring(title: str, amount: float, category: str, frequency: str, next
     )
     response.raise_for_status()
     typer.echo(f"Created recurring expense #{response.json()['id']}")
+
+
+@app.command("recurring-list")
+def list_recurring() -> None:
+    response = httpx.get(f"{api_url()}/recurring-expenses", headers=auth_headers(), timeout=10)
+    response.raise_for_status()
+    for item in response.json():
+        typer.echo(
+            f"{item['id']}: {item['next_due_on']} {item['frequency']} "
+            f"{item['category']} {item['amount']} - {item['title']}"
+        )
