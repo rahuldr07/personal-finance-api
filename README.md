@@ -1,9 +1,17 @@
 # Personal Finance API
 
-A FastAPI backend for tracking personal expenses, budgets, and spending reports. The project
-is intentionally small enough to run locally, but it uses the same building blocks expected in
-a production-style backend: authentication, database persistence, validation, tests, CLI tooling,
-Docker support, and developer documentation.
+A polished FastAPI backend for tracking personal expenses, budgets, recurring bills, and spending
+insights. The project is intentionally small enough to run locally, but it uses the same building
+blocks expected in a production-style backend: authentication, database persistence, validation,
+tests, CLI tooling, Docker support, and developer documentation.
+
+## Highlights
+
+```text
+Auth + JWT        Expense CRUD       Budget tracking
+CSV export        CLI workflow       Recurring bills
+Insights API      Docker setup       Test coverage
+```
 
 ## What It Does
 
@@ -11,7 +19,8 @@ Docker support, and developer documentation.
 - Tracks expenses with categories, dates, notes, and amount filters
 - Supports expense search, updates, deletes, and CSV export
 - Manages monthly category budgets
-- Reports monthly totals, yearly totals, top expenses, category share, and budget status
+- Tracks recurring expenses such as subscriptions, rent, bills, and memberships
+- Reports monthly totals, yearly totals, top expenses, category share, insights, and budget status
 - Provides a CLI client for common local workflows
 - Runs with SQLite by default for quick setup
 
@@ -135,6 +144,9 @@ finance-cli list --category food
 finance-cli summary 2026 5
 finance-cli budget-add food 500
 finance-cli budget-status 2026 5
+finance-cli recurring-add "Internet bill" 49.99 bills monthly 2026-06-01
+finance-cli recurring-list
+finance-cli insights 2026 5
 finance-cli export --output expenses.csv
 ```
 
@@ -185,9 +197,24 @@ http://127.0.0.1:8000
 | Expenses | `PATCH /expenses/{id}`, `DELETE /expenses/{id}` |
 | Budgets | `POST /budgets`, `GET /budgets`, `PATCH /budgets/{id}` |
 | Budgets | `DELETE /budgets/{id}`, `GET /budgets/status/monthly` |
+| Recurring | `POST /recurring-expenses`, `GET /recurring-expenses` |
+| Recurring | `PATCH /recurring-expenses/{id}`, `DELETE /recurring-expenses/{id}` |
 | Reports | `GET /reports/monthly`, `GET /reports/yearly` |
 | Reports | `GET /reports/top-expenses`, `GET /reports/category-shares` |
+| Reports | `GET /reports/insights` |
 | Export | `GET /reports/export.csv` |
+
+## Example Insight Response
+
+```json
+{
+  "expense_count": 8,
+  "total_spent": 942.35,
+  "average_expense": 117.79,
+  "largest_expense": 400.0,
+  "highest_category": "bills"
+}
+```
 
 ## Troubleshooting
 
@@ -228,4 +255,3 @@ The project is expected to pass:
 pytest
 ruff check .
 ```
-
