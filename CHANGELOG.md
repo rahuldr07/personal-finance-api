@@ -11,3 +11,6 @@
 - Added budget tracking endpoints.
 - Added yearly reports, CSV export, text search, and amount filters.
 - Added versioned health check metadata.
+- Added recurring expense templates for predictable bills and subscriptions.
+- Added monthly spending insights with total, average, largest expense, and highest category.
+- Added CLI commands for recurring expenses and monthly insights.
