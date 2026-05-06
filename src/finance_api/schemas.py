@@ -2,7 +2,7 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, EmailStr, Field
 
-from finance_api.models import ExpenseCategory, RecurrenceFrequency
+from finance_api.models import ExpenseCategory, PaymentMethod, RecurrenceFrequency
 
 
 class UserCreate(BaseModel):
@@ -31,6 +31,8 @@ class ExpenseCreate(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     amount: float = Field(gt=0)
     category: ExpenseCategory = ExpenseCategory.other
+    payment_method: PaymentMethod = PaymentMethod.other
+    merchant: str | None = Field(default=None, max_length=120)
     spent_on: date
     note: str | None = Field(default=None, max_length=500)
 
@@ -39,6 +41,8 @@ class ExpenseUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=120)
     amount: float | None = Field(default=None, gt=0)
     category: ExpenseCategory | None = None
+    payment_method: PaymentMethod | None = None
+    merchant: str | None = Field(default=None, max_length=120)
     spent_on: date | None = None
     note: str | None = Field(default=None, max_length=500)
 
@@ -48,6 +52,8 @@ class ExpenseRead(BaseModel):
     title: str
     amount: float
     category: ExpenseCategory
+    payment_method: PaymentMethod
+    merchant: str | None
     spent_on: date
     note: str | None
     created_at: datetime
