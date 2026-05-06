@@ -23,6 +23,15 @@ class RecurrenceFrequency(StrEnum):
     yearly = "yearly"
 
 
+class PaymentMethod(StrEnum):
+    cash = "cash"
+    debit_card = "debit_card"
+    credit_card = "credit_card"
+    bank_transfer = "bank_transfer"
+    upi = "upi"
+    other = "other"
+
+
 class User(Base):
     __tablename__ = "users"
 
