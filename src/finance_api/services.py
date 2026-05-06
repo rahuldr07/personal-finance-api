@@ -48,6 +48,8 @@ def list_expenses(
     min_amount: float | None = None,
     max_amount: float | None = None,
     search: str | None = None,
+    payment_method: models.PaymentMethod | None = None,
+    merchant: str | None = None,
     skip: int = 0,
     limit: int = 50,
 ) -> list[models.Expense]:
@@ -67,6 +69,10 @@ def list_expenses(
         query = query.where(
             models.Expense.title.ilike(pattern) | models.Expense.note.ilike(pattern)
         )
+    if payment_method:
+        query = query.where(models.Expense.payment_method == payment_method)
+    if merchant:
+        query = query.where(models.Expense.merchant.ilike(f"%{merchant.strip()}%"))
     query = query.order_by(models.Expense.spent_on.desc(), models.Expense.id.desc()).offset(skip).limit(limit)
     return list(db.scalars(query))
 
