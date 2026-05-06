@@ -2,10 +2,11 @@ from datetime import date
 
 from fastapi.testclient import TestClient
 
-from finance_api.database import init_db
+from finance_api.database import Base, engine, init_db
 from finance_api.main import app
 
 
+Base.metadata.drop_all(bind=engine)
 init_db()
 client = TestClient(app)
 
