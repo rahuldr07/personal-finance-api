@@ -51,6 +51,8 @@ class Expense(Base):
     title: Mapped[str] = mapped_column(String(120), nullable=False)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     category: Mapped[ExpenseCategory] = mapped_column(Enum(ExpenseCategory), nullable=False)
+    payment_method: Mapped[PaymentMethod] = mapped_column(Enum(PaymentMethod), default=PaymentMethod.other)
+    merchant: Mapped[str | None] = mapped_column(String(120), nullable=True)
     spent_on: Mapped[date] = mapped_column(Date, nullable=False)
     note: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
