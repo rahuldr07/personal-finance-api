@@ -320,3 +320,16 @@ def spending_insights(db: Session, owner: models.User, year: int, month: int) ->
         largest_expense=largest,
         highest_category=highest,
     )
+
+
+def serialize_savings_goal(goal: models.SavingsGoal) -> schemas.SavingsGoalRead:
+    progress = round((goal.current_amount / goal.target_amount) * 100, 2)
+    return schemas.SavingsGoalRead(
+        id=goal.id,
+        name=goal.name,
+        target_amount=goal.target_amount,
+        current_amount=goal.current_amount,
+        target_date=goal.target_date,
+        progress_percentage=progress,
+        remaining_amount=round(max(goal.target_amount - goal.current_amount, 0), 2),
+    )
