@@ -351,3 +351,24 @@ def list_savings_goals(db: Session, owner: models.User) -> list[schemas.SavingsG
     query = select(models.SavingsGoal).where(models.SavingsGoal.owner_id == owner.id)
     goals = db.scalars(query.order_by(models.SavingsGoal.created_at.desc(), models.SavingsGoal.id.desc()))
     return [serialize_savings_goal(goal) for goal in goals]
+
+
+def get_savings_goal(db: Session, owner: models.User, goal_id: int) -> models.SavingsGoal | None:
+    return db.scalar(
+        select(models.SavingsGoal).where(
+            models.SavingsGoal.id == goal_id,
+            models.SavingsGoal.owner_id == owner.id,
+        )
+    )
+
+
+def update_savings_goal(
+    db: Session,
+    goal: models.SavingsGoal,
+    payload: schemas.SavingsGoalUpdate,
+) -> schemas.SavingsGoalRead:
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(goal, field, value)
+    db.commit()
+    db.refresh(goal)
+    return serialize_savings_goal(goal)
