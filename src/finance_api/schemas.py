@@ -162,3 +162,29 @@ class SpendingInsights(BaseModel):
     average_expense: float
     largest_expense: float
     highest_category: ExpenseCategory | None
+
+
+class SavingsGoalCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=120)
+    target_amount: float = Field(gt=0)
+    current_amount: float = Field(default=0, ge=0)
+    target_date: date | None = None
+
+
+class SavingsGoalUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    target_amount: float | None = Field(default=None, gt=0)
+    current_amount: float | None = Field(default=None, ge=0)
+    target_date: date | None = None
+
+
+class SavingsGoalRead(BaseModel):
+    id: int
+    name: str
+    target_amount: float
+    current_amount: float
+    target_date: date | None
+    progress_percentage: float
+    remaining_amount: float
+
+    model_config = {"from_attributes": True}
