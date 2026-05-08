@@ -372,3 +372,8 @@ def update_savings_goal(
     db.commit()
     db.refresh(goal)
     return serialize_savings_goal(goal)
+
+
+def delete_savings_goal(db: Session, goal: models.SavingsGoal) -> None:
+    db.delete(goal)
+    db.commit()
