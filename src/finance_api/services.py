@@ -333,3 +333,21 @@ def serialize_savings_goal(goal: models.SavingsGoal) -> schemas.SavingsGoalRead:
         progress_percentage=progress,
         remaining_amount=round(max(goal.target_amount - goal.current_amount, 0), 2),
     )
+
+
+def create_savings_goal(
+    db: Session,
+    owner: models.User,
+    payload: schemas.SavingsGoalCreate,
+) -> schemas.SavingsGoalRead:
+    goal = models.SavingsGoal(owner_id=owner.id, **payload.model_dump())
+    db.add(goal)
+    db.commit()
+    db.refresh(goal)
+    return serialize_savings_goal(goal)
+
+
+def list_savings_goals(db: Session, owner: models.User) -> list[schemas.SavingsGoalRead]:
+    query = select(models.SavingsGoal).where(models.SavingsGoal.owner_id == owner.id)
+    goals = db.scalars(query.order_by(models.SavingsGoal.created_at.desc(), models.SavingsGoal.id.desc()))
+    return [serialize_savings_goal(goal) for goal in goals]
