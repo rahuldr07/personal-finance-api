@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from finance_api.config import get_settings
 from finance_api.database import init_db
-from finance_api.routers import auth, budgets, expenses, recurring, reports
+from finance_api.routers import auth, budgets, expenses, recurring, reports, savings
 
 
 @asynccontextmanager
@@ -22,6 +22,7 @@ def create_app() -> FastAPI:
     app.include_router(expenses.router)
     app.include_router(recurring.router)
     app.include_router(reports.router)
+    app.include_router(savings.router)
 
     @app.get("/health", tags=["system"])
     def health_check() -> dict[str, str]:
