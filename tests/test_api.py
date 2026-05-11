@@ -371,3 +371,20 @@ def test_create_and_list_savings_goals():
     response = client.get("/savings-goals", headers=headers)
     assert response.status_code == 200
     assert any(item["name"] == "Emergency fund" for item in response.json())
+
+
+def test_update_and_delete_savings_goal():
+    headers = auth_headers("savings-update@example.com")
+    created = client.post(
+        "/savings-goals",
+        json={"name": "New laptop", "target_amount": 1500, "current_amount": 300},
+        headers=headers,
+    )
+    goal_id = created.json()["id"]
+
+    updated = client.patch(f"/savings-goals/{goal_id}", json={"current_amount": 600}, headers=headers)
+    assert updated.status_code == 200
+    assert updated.json()["progress_percentage"] == 40
+
+    deleted = client.delete(f"/savings-goals/{goal_id}", headers=headers)
+    assert deleted.status_code == 204
