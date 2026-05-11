@@ -356,3 +356,18 @@ def test_update_and_delete_recurring_expense():
 
     deleted = client.delete(f"/recurring-expenses/{recurring_id}", headers=headers)
     assert deleted.status_code == 204
+
+
+def test_create_and_list_savings_goals():
+    headers = auth_headers("savings-list@example.com")
+    created = client.post(
+        "/savings-goals",
+        json={"name": "Emergency fund", "target_amount": 1000, "current_amount": 250},
+        headers=headers,
+    )
+    assert created.status_code == 201
+    assert created.json()["progress_percentage"] == 25
+
+    response = client.get("/savings-goals", headers=headers)
+    assert response.status_code == 200
+    assert any(item["name"] == "Emergency fund" for item in response.json())
