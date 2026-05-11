@@ -83,6 +83,29 @@ def test_filter_expenses_by_amount_range():
     assert any(item["title"] == "Large purchase" for item in response.json())
 
 
+def test_filter_expenses_by_payment_method_and_merchant():
+    headers = auth_headers("expense-payment-filter@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Headphones",
+            "amount": 80,
+            "category": "shopping",
+            "payment_method": "credit_card",
+            "merchant": "Audio Store",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+
+    response = client.get(
+        "/expenses?payment_method=credit_card&merchant=Audio",
+        headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.json()[0]["merchant"] == "Audio Store"
+
+
 def test_search_expenses_by_text():
     headers = auth_headers("expense-search@example.com")
     client.post(
