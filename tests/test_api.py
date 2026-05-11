@@ -59,6 +59,12 @@ def test_list_expense_categories():
     assert "food" in response.json()
 
 
+def test_list_payment_methods():
+    response = client.get("/expenses/meta/payment-methods")
+    assert response.status_code == 200
+    assert "credit_card" in response.json()
+
+
 def test_filter_expenses_by_amount_range():
     headers = auth_headers("expense-filter@example.com")
     client.post(
