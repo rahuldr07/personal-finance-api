@@ -377,3 +377,14 @@ def update_savings_goal(
 def delete_savings_goal(db: Session, goal: models.SavingsGoal) -> None:
     db.delete(goal)
     db.commit()
+
+
+def dashboard_summary(db: Session, owner: models.User, year: int, month: int) -> schemas.DashboardSummary:
+    insights = spending_insights(db, owner, year, month)
+    return schemas.DashboardSummary(
+        month_total=insights.total_spent,
+        expense_count=insights.expense_count,
+        active_budget_count=len(list_budgets(db, owner)),
+        savings_goal_count=len(list_savings_goals(db, owner)),
+        recurring_expense_count=len(list_recurring_expenses(db, owner)),
+    )
