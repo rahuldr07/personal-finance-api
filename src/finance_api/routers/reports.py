@@ -64,6 +64,16 @@ def get_spending_insights(
     return services.spending_insights(db, user, year, month)
 
 
+@router.get("/dashboard", response_model=schemas.DashboardSummary)
+def get_dashboard_summary(
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[models.User, Depends(get_current_user)],
+    year: int = Query(ge=2000, le=2100),
+    month: int = Query(ge=1, le=12),
+):
+    return services.dashboard_summary(db, user, year, month)
+
+
 @router.get("/export.csv", response_class=Response)
 def export_expenses_csv(
     db: Annotated[Session, Depends(get_db)],
