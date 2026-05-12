@@ -176,3 +176,19 @@ def insights(year: int, month: int) -> None:
     typer.echo(f"Total spent: {data['total_spent']}")
     typer.echo(f"Average expense: {data['average_expense']}")
     typer.echo(f"Largest expense: {data['largest_expense']}")
+
+
+@app.command("dashboard")
+def dashboard(year: int, month: int) -> None:
+    response = httpx.get(
+        f"{api_url()}/reports/dashboard",
+        headers=auth_headers(),
+        params={"year": year, "month": month},
+        timeout=10,
+    )
+    response.raise_for_status()
+    data = response.json()
+    typer.echo(f"Monthly total: {data['month_total']}")
+    typer.echo(f"Expenses: {data['expense_count']}")
+    typer.echo(f"Budgets: {data['active_budget_count']}")
+    typer.echo(f"Savings goals: {data['savings_goal_count']}")
