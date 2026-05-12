@@ -208,3 +208,14 @@ def add_goal(name: str, target_amount: float, current_amount: float = 0) -> None
     )
     response.raise_for_status()
     typer.echo(f"Created savings goal #{response.json()['id']}")
+
+
+@app.command("goal-list")
+def list_goals() -> None:
+    response = httpx.get(f"{api_url()}/savings-goals", headers=auth_headers(), timeout=10)
+    response.raise_for_status()
+    for item in response.json():
+        typer.echo(
+            f"{item['id']}: {item['name']} {item['current_amount']}/"
+            f"{item['target_amount']} ({item['progress_percentage']}%)"
+        )
