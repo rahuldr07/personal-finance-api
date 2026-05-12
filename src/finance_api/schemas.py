@@ -188,3 +188,11 @@ class SavingsGoalRead(BaseModel):
     remaining_amount: float
 
     model_config = {"from_attributes": True}
+
+
+class DashboardSummary(BaseModel):
+    month_total: float
+    expense_count: int
+    active_budget_count: int
+    savings_goal_count: int
+    recurring_expense_count: int
