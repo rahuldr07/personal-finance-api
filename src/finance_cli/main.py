@@ -192,3 +192,19 @@ def dashboard(year: int, month: int) -> None:
     typer.echo(f"Expenses: {data['expense_count']}")
     typer.echo(f"Budgets: {data['active_budget_count']}")
     typer.echo(f"Savings goals: {data['savings_goal_count']}")
+
+
+@app.command("goal-add")
+def add_goal(name: str, target_amount: float, current_amount: float = 0) -> None:
+    response = httpx.post(
+        f"{api_url()}/savings-goals",
+        headers=auth_headers(),
+        json={
+            "name": name,
+            "target_amount": target_amount,
+            "current_amount": current_amount,
+        },
+        timeout=10,
+    )
+    response.raise_for_status()
+    typer.echo(f"Created savings goal #{response.json()['id']}")
