@@ -275,6 +275,30 @@ def test_spending_insights_report():
     assert response.json()["largest_expense"] == 120
 
 
+def test_dashboard_summary_report():
+    headers = auth_headers("dashboard@example.com")
+    client.post(
+        "/expenses",
+        json={
+            "title": "Desk lamp",
+            "amount": 35,
+            "category": "shopping",
+            "spent_on": "2026-05-17",
+        },
+        headers=headers,
+    )
+    client.post(
+        "/savings-goals",
+        json={"name": "Trip", "target_amount": 500, "current_amount": 100},
+        headers=headers,
+    )
+
+    response = client.get("/reports/dashboard?year=2026&month=5", headers=headers)
+    assert response.status_code == 200
+    assert response.json()["month_total"] == 35
+    assert response.json()["savings_goal_count"] == 1
+
+
 def test_create_and_list_budgets():
     headers = auth_headers("budget@example.com")
     created = client.post(
