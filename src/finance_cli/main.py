@@ -44,7 +44,15 @@ def login(email: str, password: str) -> None:
 
 
 @app.command("add")
-def add_expense(title: str, amount: float, category: str, spent_on: str, note: str = "") -> None:
+def add_expense(
+    title: str,
+    amount: float,
+    category: str,
+    spent_on: str,
+    note: str = "",
+    payment_method: str = "other",
+    merchant: str = "",
+) -> None:
     response = httpx.post(
         f"{api_url()}/expenses",
         headers=auth_headers(),
@@ -54,6 +62,8 @@ def add_expense(title: str, amount: float, category: str, spent_on: str, note: s
             "category": category,
             "spent_on": spent_on,
             "note": note or None,
+            "payment_method": payment_method,
+            "merchant": merchant or None,
         },
         timeout=10,
     )
