@@ -27,3 +27,10 @@ pytest
 ruff check .
 ```
 
+## Smoke Test
+
+After starting the API, verify the health endpoint:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
