@@ -14,3 +14,6 @@
 - Added recurring expense templates for predictable bills and subscriptions.
 - Added monthly spending insights with total, average, largest expense, and highest category.
 - Added CLI commands for recurring expenses and monthly insights.
+- Added payment method and merchant tracking for expenses.
+- Added savings goals with progress calculations.
+- Added dashboard summary reporting and CLI commands.
