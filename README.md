@@ -205,11 +205,13 @@ http://127.0.0.1:8000
 | Expenses | `PATCH /expenses/{id}`, `DELETE /expenses/{id}` |
 | Budgets | `POST /budgets`, `GET /budgets`, `PATCH /budgets/{id}` |
 | Budgets | `DELETE /budgets/{id}`, `GET /budgets/status/monthly` |
+| Savings | `POST /savings-goals`, `GET /savings-goals` |
+| Savings | `PATCH /savings-goals/{id}`, `DELETE /savings-goals/{id}` |
 | Recurring | `POST /recurring-expenses`, `GET /recurring-expenses` |
 | Recurring | `PATCH /recurring-expenses/{id}`, `DELETE /recurring-expenses/{id}` |
 | Reports | `GET /reports/monthly`, `GET /reports/yearly` |
 | Reports | `GET /reports/top-expenses`, `GET /reports/category-shares` |
-| Reports | `GET /reports/insights` |
+| Reports | `GET /reports/insights`, `GET /reports/dashboard` |
 | Export | `GET /reports/export.csv` |
 
 ## Example Insight Response
