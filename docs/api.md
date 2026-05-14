@@ -12,7 +12,7 @@
 ## Expenses
 
 - `POST /expenses` creates an expense.
-- `GET /expenses` lists expenses for the logged-in user.
+- `GET /expenses` lists expenses for the logged-in user with optional category, merchant, payment method, amount, date, and text filters.
 - `GET /expenses/{expense_id}` returns one expense.
 - `PATCH /expenses/{expense_id}` updates an expense.
 - `DELETE /expenses/{expense_id}` deletes an expense.
@@ -40,7 +40,15 @@
 - `GET /reports/top-expenses?limit=5` returns the largest expenses.
 - `GET /reports/category-shares?year=2026&month=5` returns category percentages.
 - `GET /reports/insights?year=2026&month=5` returns spending count, total, average, largest expense, and highest category.
+- `GET /reports/dashboard?year=2026&month=5` returns a compact account dashboard summary.
 - `GET /reports/export.csv` exports expenses as CSV.
+
+## Savings Goals
+
+- `POST /savings-goals` creates a goal with target and current amounts.
+- `GET /savings-goals` lists goals with progress and remaining amount.
+- `PATCH /savings-goals/{goal_id}` updates a goal.
+- `DELETE /savings-goals/{goal_id}` removes a goal.
 
 ## CLI
 
@@ -54,4 +62,7 @@
 - `finance-cli recurring-add TITLE AMOUNT CATEGORY FREQUENCY NEXT_DUE_ON` creates a recurring template.
 - `finance-cli recurring-list` prints recurring templates.
 - `finance-cli insights YEAR MONTH` prints monthly spending insights.
+- `finance-cli dashboard YEAR MONTH` prints a compact account dashboard.
+- `finance-cli goal-add NAME TARGET_AMOUNT` creates a savings goal.
+- `finance-cli goal-list` lists savings goal progress.
 - `finance-cli export --output expenses.csv` exports expense data.
