@@ -15,8 +15,10 @@ registration and login boundaries.
 Expense queries are scoped to the authenticated user. Shared helper functions require the
 current user object before reading or mutating expense data.
 
+Budgets, recurring expenses, and savings goals follow the same owner-scoped access pattern.
+Report endpoints build from those scoped service functions instead of reading global records.
+
 ## Local Files
 
 SQLite databases and `.env` files are ignored by Git and Docker builds to avoid leaking local
 state or secrets.
-
