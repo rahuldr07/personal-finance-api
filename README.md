@@ -10,7 +10,8 @@ tests, CLI tooling, Docker support, and developer documentation.
 ```text
 Auth + JWT        Expense CRUD       Budget tracking
 CSV export        CLI workflow       Recurring bills
-Insights API      Docker setup       Test coverage
+Savings goals     Insights API       Dashboard summary
+Docker setup      Test coverage      Rich filters
 ```
 
 ## What It Does
@@ -20,7 +21,10 @@ Insights API      Docker setup       Test coverage
 - Supports expense search, updates, deletes, and CSV export
 - Manages monthly category budgets
 - Tracks recurring expenses such as subscriptions, rent, bills, and memberships
+- Tracks payment method and merchant details for cleaner expense history
+- Tracks savings goals with progress and remaining amount
 - Reports monthly totals, yearly totals, top expenses, category share, insights, and budget status
+- Provides a compact dashboard summary for monthly account health
 - Provides a CLI client for common local workflows
 - Runs with SQLite by default for quick setup
 
@@ -140,10 +144,14 @@ After the API is running:
 finance-cli register dev@example.com password123
 finance-cli login dev@example.com password123
 finance-cli add "Lunch" 12.5 food 2026-05-17
+finance-cli add "Headphones" 80 shopping 2026-05-17 "" credit_card "Audio Store"
 finance-cli list --category food
 finance-cli summary 2026 5
+finance-cli dashboard 2026 5
 finance-cli budget-add food 500
 finance-cli budget-status 2026 5
+finance-cli goal-add "Emergency fund" 1000 250
+finance-cli goal-list
 finance-cli recurring-add "Internet bill" 49.99 bills monthly 2026-06-01
 finance-cli recurring-list
 finance-cli insights 2026 5
