@@ -226,6 +226,18 @@ http://127.0.0.1:8000
 }
 ```
 
+## Example Dashboard Response
+
+```json
+{
+  "month_total": 942.35,
+  "expense_count": 8,
+  "active_budget_count": 4,
+  "savings_goal_count": 2,
+  "recurring_expense_count": 3
+}
+```
+
 ## Troubleshooting
 
 ### `python: command not found`
