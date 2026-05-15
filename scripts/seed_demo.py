@@ -20,6 +20,8 @@ def main() -> None:
                 title="Demo lunch",
                 amount=14.5,
                 category="food",
+                payment_method="debit_card",
+                merchant="Demo Cafe",
                 spent_on=date.today(),
                 note="Seeded example",
             ),
@@ -29,4 +31,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
