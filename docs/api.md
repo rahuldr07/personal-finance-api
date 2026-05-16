@@ -16,6 +16,8 @@
 - `GET /expenses/{expense_id}` returns one expense.
 - `PATCH /expenses/{expense_id}` updates an expense.
 - `DELETE /expenses/{expense_id}` deletes an expense.
+- `GET /expenses/meta/categories` lists accepted categories.
+- `GET /expenses/meta/payment-methods` lists accepted payment methods.
 
 ## Budgets
 
