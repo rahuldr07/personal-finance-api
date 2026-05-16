@@ -172,6 +172,7 @@ make run
 make test
 make lint
 make seed
+make smoke
 ```
 
 Equivalent direct commands:
